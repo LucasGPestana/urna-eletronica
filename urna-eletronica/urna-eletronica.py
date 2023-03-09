@@ -83,6 +83,10 @@ num_eleitores = 0
 
 while True:
 
+    exist_candidato = False
+
+    limpaTela()
+
     if isValidDay():
 
         if isValidTime():
@@ -206,7 +210,7 @@ window_winner.mainloop()
 window_rank = tkinter.Tk()
 window_rank.title("Ranking Final")
 
-txt_rank = tkinter.Label(window_rank, text="")
+txt_rank = tkinter.Label(window_rank, text=f"Ao todo, tivemos {num_eleitores} eleitores")
 txt_rank.grid(column=0, row=0)
 
 mostrarRanking()
