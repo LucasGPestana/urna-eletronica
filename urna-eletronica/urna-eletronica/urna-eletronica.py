@@ -87,6 +87,8 @@ while True:
 
         if isValidTime():
 
+            time.sleep(5)
+
             limpaTela()
 
             while True:
