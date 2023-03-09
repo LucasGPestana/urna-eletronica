@@ -19,13 +19,9 @@ def realizarClassificacao():
 
 def mostrarRanking():
 
-    pos = 0
+    for pos, candidato in enumerate(ranking):
 
-    for candidato in ranking:
-
-        pos += 1
-
-        txt_rank['text'] += f"{pos} - {candidato['nome']}, com {candidato['votos']}\n"
+        txt_rank['text'] += f"{pos + 1} - {candidato['nome']}, com {candidato['votos']}\n"
     
 def isValidDay():
 
@@ -69,13 +65,9 @@ def criarArquivoCandidatos():
 
     arq_info_cand = open('info/candidatos.txt', 'w')
 
-    pos = 0
+    for pos, candidato in enumerate(ranking):
 
-    for candidato in ranking:
-
-        pos += 1
-
-        arq_info_cand.write(f"{pos} - {candidato['nome']}, com {candidato['votos']}\n")
+        arq_info_cand.write(f"{pos + 1} - {candidato['nome']}, com {candidato['votos']}\n")
 
     arq_info_cand.close()
         
@@ -143,9 +135,27 @@ while True:
 
                 print(f"{nome_candidato} - {numero_candidato}".center(50))
 
-            candidato_escolhido = input("Digite o número de seu candidato: ")
+            while True:
 
-            if num_eleitores == 1:
+                candidato_escolhido = input("Digite o número de seu candidato: ")
+
+                for candidato in candidatos:
+
+                    nome, numero, votos = candidato.values()
+
+                    if candidato_escolhido == numero:
+                        exist_candidato = True
+                    else:
+                        continue
+
+                if exist_candidato:
+                    break
+                else:
+                    print("O número desse candidato não consta no sistema! Digite-o novamente")
+                    time.sleep(5)
+                    limpaTela()
+
+            if num_eleitores == 1 and exist_candidato:
 
                 votos_confirmados.append(candidato_escolhido)
 
