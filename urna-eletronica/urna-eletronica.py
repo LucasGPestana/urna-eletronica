@@ -27,7 +27,7 @@ def isValidDay():
 
     data_atual = datetime.date.today()
 
-    if data_atual.ctime()[0:3] == 'Thu':
+    if data_atual.ctime()[0:3] == 'Sun':
         return True
     else:
         print("Hoje não é domingo!")
@@ -99,8 +99,6 @@ while True:
 
                 limpaTela()
 
-                num_eleitores += 1
-
                 nome = input("Digite seu primeiro nome: ")
 
                 if not(nome.isalpha()):
@@ -108,6 +106,7 @@ while True:
                     time.sleep(5)
                     limpaTela()
                 else:
+                    num_eleitores += 1
                     break
 
             while True:
@@ -147,9 +146,9 @@ while True:
 
                 for candidato in candidatos:
 
-                    nome, numero, votos = candidato.values()
+                    nome_candidato, numero_candidato, votos_candidato = candidato.values()
 
-                    if candidato_escolhido == numero:
+                    if candidato_escolhido == numero_candidato:
                         exist_candidato = True
                     else:
                         continue
@@ -157,7 +156,7 @@ while True:
                 if exist_candidato:
                     break
                 else:
-                    print("O número desse candidato não consta no sistema! Digite-o novamente")
+                    print("O número desse candidato não consta no sistema! Digite-o novamente!")
                     time.sleep(5)
                     limpaTela()
 
@@ -187,6 +186,7 @@ while True:
 
                 else:
                     print("Esse CPF consta como já votado!")
+                    num_eleitores -= 1
                     time.sleep(5)
                     limpaTela()
         else:
@@ -210,7 +210,7 @@ window_winner.mainloop()
 window_rank = tkinter.Tk()
 window_rank.title("Ranking Final")
 
-txt_rank = tkinter.Label(window_rank, text=f"Ao todo, tivemos {num_eleitores} eleitores")
+txt_rank = tkinter.Label(window_rank, text=f"Ao todo, tivemos {num_eleitores} eleitores\n")
 txt_rank.grid(column=0, row=0)
 
 mostrarRanking()
