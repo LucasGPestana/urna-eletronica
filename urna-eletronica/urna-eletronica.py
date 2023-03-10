@@ -99,9 +99,9 @@ while True:
 
                 limpaTela()
 
-                nome = input("Digite seu primeiro nome: ")
+                nome = input("Digite seu primeiro nome: ").capitalize()
 
-                padrao_nome = re.compile("^[\S][a-zA-Z\s\W]+")
+                padrao_nome = re.compile("^[\S][a-zA-Z\s\D]+")
 
                 if re.fullmatch(padrao_nome, nome) == None:
                     print("Nome inválido! Digite-o novamente!")
