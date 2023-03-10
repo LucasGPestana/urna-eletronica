@@ -1,4 +1,4 @@
-import datetime, os , time, tkinter
+import datetime, os , time, tkinter, re
 
 def limpaTela():
     
@@ -101,7 +101,9 @@ while True:
 
                 nome = input("Digite seu primeiro nome: ")
 
-                if not(nome.isalpha()):
+                padrao_nome = re.compile("^[\S][a-zA-Z\s\W]+")
+
+                if re.fullmatch(padrao_nome, nome) == None:
                     print("Nome inválido! Digite-o novamente!")
                     time.sleep(5)
                     limpaTela()
