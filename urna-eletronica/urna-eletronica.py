@@ -4,6 +4,11 @@ def limpaTela():
     
     os.system('cls') or None
 
+def fecharJanela():
+    
+    window_eleitores.destroy()
+    quit()
+
 def ordenar_candidatos(candidato):
     return candidato['votos']
 
@@ -42,7 +47,7 @@ def isValidTime():
     ano_atual = data_atual.year
 
     horario_atual = datetime.datetime.now()
-    horario_final = datetime.datetime(ano_atual, mes_atual, dia_atual, 20, 0, 0)
+    horario_final = datetime.datetime(ano_atual, mes_atual, dia_atual, 21, 0, 0)
 
     if horario_atual >= horario_final:
         print("As eleições se encerraram!")
@@ -85,14 +90,22 @@ info_eleitores = list()
 
 def validarInformacoes():
 
+    res_confirmar['text'] = ""
+
+    exist_candidato = False
+    exist_nome = False
+    exist_cpf = False
+
     nome = input_nome.get()
 
     padrao_nome = re.compile("^[\S][a-zA-Z\s\D]+")
 
     if re.fullmatch(padrao_nome, nome) == None:
-        res_nome['text'] = "Nome inválido! Digite-o novamente!"
+        res_nome['text'] = "Nome inválido!\n"
+        res_nome['text'] += "Digite-o novamente!"
     else:
         exist_nome = True
+        res_nome['text'] = ""
 
     cpf = input_cpf.get()
 
@@ -101,16 +114,21 @@ def validarInformacoes():
             if cpf[0:3].isnumeric() and cpf[4:7].isnumeric() and cpf[8:11].isnumeric() and cpf[12:14].isnumeric():
                 cpf = cpf[0:3] + cpf[4:7] + cpf[8:11] + cpf[12:14]
                 exist_cpf = True
+                res_cpf['text'] = ""
             else:
-                input_cpf['text'] = "CPF inválido! Digite-o novamente!"
+                res_cpf['text'] = "CPF inválido!\n"
+                res_cpf['text'] += "Digite-o novamente!"
         else:
             if not(cpf.isnumeric()):
-                input_cpf['text'] = "CPF inválido! Digite-o novamente!"
+                res_cpf['text'] = "CPF inválido!\n"
+                res_cpf['text'] += "Digite-o novamente!"
             else:
                 exist_cpf = True
+                res_cpf['text'] = ""
     else:
-        input_cpf['text'] = "Esse CPF não atende a quantidade correta! Digite-o novamente!"
-  
+        res_cpf['text'] = "Esse CPF não atende\n"
+        res_cpf['text'] += "a quantidade correta!\n"
+        res_cpf['text'] += "Digite-o novamente!"
     for candidato in candidatos:
 
         nome_candidato, numero_candidato, votos_candidato = candidato.items()
@@ -126,11 +144,15 @@ def validarInformacoes():
 
         if candidato_escolhido == numero_candidato:
             exist_candidato = True
+            res_num_cand['text'] = ""
         else:
             continue
 
     if not(exist_candidato):
-        res_num_cand['text'] = "O número desse candidato não consta no sistema! Digite-o novamente!"
+        res_num_cand['text'] = f"O número desse\n"
+        res_num_cand['text'] += "candidato não consta\n"
+        res_num_cand['text'] += "no sistema!\n"
+        res_num_cand['text'] += "Digite-o novamente!"
 
     if info_eleitores == [] and exist_candidato and exist_nome and exist_cpf:
 
@@ -138,38 +160,39 @@ def validarInformacoes():
 
         info_eleitores.append((cpf, nome, candidato_escolhido))
 
-        res_confirmar['text'] = "Voto Confirmado! Obrigado!"
-        res_confirmar['text'] += "Por favor, espere 10 segundos!"
+        res_confirmar['text'] = "Voto Confirmado!\n" 
+        res_confirmar['text'] += "Obrigado!"
 
         time.sleep(10)
-
-        window_eleitores.destroy()
-            
+  
     else:
 
-        if not(cpf in info_eleitores[0]) and exist_candidato and exist_cpf and exist_nome:
+        if info_eleitores != []:
 
-            votos_confirmados.append(candidato_escolhido)
+            if not(cpf in info_eleitores[0]):
+                if exist_candidato and exist_cpf and exist_nome:
 
-            info_eleitores.append((cpf, nome, candidato_escolhido))
+                    votos_confirmados.append(candidato_escolhido)
 
-            res_confirmar['text'] = "Voto Confirmado! Obrigado!"
-            res_confirmar['text'] += "Por favor, espere 10 segundos!"
+                    info_eleitores.append((cpf, nome, candidato_escolhido))
 
-            time.sleep(10)
+                    res_confirmar['text'] = "Voto Confirmado!\n" 
+                    res_confirmar['text'] += "Obrigado!"
 
-            window_eleitores.destroy()
+                    time.sleep(10)
 
-        else:
-            res_cpf['Text'] = "Esse CPF consta como já votado!"
+                else: 
+                    res_confirmar['text'] = "Algumas da informações\n"
+                    res_confirmar['text'] = "digitadas é inválida!"
+                    res_confirmar['fg'] = "#FF0000"
+            else:
+                res_cpf['text'] = "Esse CPF consta como já votado!"
+
+    input_nome.delete(0, tkinter.END)
+    input_cpf.delete(0, tkinter.END)
+    input_num_cand.delete(0, tkinter.END)
 
 while True:
-
-    exist_candidato = False
-    exist_nome = False
-    exist_cpf = False
-
-    limpaTela()
 
     if isValidDay():
 
@@ -183,7 +206,7 @@ while True:
 
             window_eleitores = tkinter.Tk()
             window_eleitores.title("Realizar Voto")
-            window_eleitores.geometry("400x400")
+            window_eleitores.geometry("500x600")
             window_eleitores.configure(background="#1e1e1e")
 
 
@@ -194,9 +217,13 @@ while True:
             input_nome = tkinter.Entry(master=window_eleitores, bg="#DADADA")
             input_nome.grid(row=1, column=0, padx=5, pady=5)
 
-            res_nome = tkinter.Label(master=window_eleitores, bg=background, fg="#FF0000", text="")
+            res_nome = tkinter.Label(master=window_eleitores, bg=background, fg="#FF0000", height=3, text="")
             res_nome.grid(row=2, column=0, padx=5, pady=5)
 
+            # Campo Tempo
+
+            txt_tempo = tkinter.Label(master=window_eleitores, text="", font=font_family, bg=background, fg=font_color)
+            txt_tempo.grid(row=0, column=1, padx=5, pady=5)
 
             # Campo CPF
             txt_cpf = tkinter.Label(master=window_eleitores, text="CPF", anchor='w', font=font_family, bg=background, fg=font_color)
@@ -205,7 +232,7 @@ while True:
             input_cpf = tkinter.Entry(master=window_eleitores, bg="#DADADA")
             input_cpf.grid(row=4, column=0, padx=5, pady=5)
 
-            res_cpf = tkinter.Label(master=window_eleitores, fg="#00FF00", text="", bg=background)
+            res_cpf = tkinter.Label(master=window_eleitores, fg="#FF0000", text="", bg=background, height=3)
             res_cpf.grid(row=5, column=0, padx=5, pady=5)
 
 
@@ -216,14 +243,22 @@ while True:
             input_num_cand = tkinter.Entry(master=window_eleitores, bg="#DADADA", width="2", font=("Arial 25"))
             input_num_cand.grid(row=7, column=0, padx=5, pady=5)
 
-            res_num_cand = tkinter.Label(master=window_eleitores, bg=background, fg="#FF0000", text="")
+            res_num_cand = tkinter.Label(master=window_eleitores, bg=background, fg="#FF0000", text="", height=4)
             res_num_cand.grid(row=8, column=0, padx=5, pady=5)
 
             # Campo Cofirmar
             btn_confirmar = tkinter.Button(master=window_eleitores, text="Confirmar", command=validarInformacoes, borderwidth=5)
-            btn_confirmar.grid(row=9, column=2)
+            btn_confirmar.grid(row=9, column=2, padx=5, pady=5)
 
-            res_confirmar = tkinter.Label(master=window_eleitores, text="", bg=background, fg="#00FF44")
+            res_confirmar = tkinter.Label(master=window_eleitores, text="", bg=background, fg="#00FF44", height=3)
+            res_confirmar.grid(row=10, column=0, padx=5, pady=5)
+
+            # Campo Sair Janela
+            txt_fechar = tkinter.Label(master=window_eleitores, text="Clique aqui para fechar a janela", fg=font_color, bg=background)
+            txt_fechar.grid(row=11, column=2, padx=5, pady=10)
+
+            btn_fechar = tkinter.Button(master=window_eleitores, text="Fechar", command=fecharJanela)
+            btn_fechar.grid(row=12, column=2)
 
             window_eleitores.mainloop()
 
@@ -236,11 +271,16 @@ contagemDeVotos()
 
 ranking = realizarClassificacao()
 
+font_family = ("Arial 10")
+font_color = "#FFFFFF"
+background = "#1e1e1e"
+
 window_winner = tkinter.Tk()
 window_winner.geometry('40x20')
 window_winner.title("Vencedor da Eleição")
+window_winner.configure(background=background)
 
-txt_vencedor = tkinter.Label(master=window_winner, text=f"{ranking[0]['nome']} venceu!")
+txt_vencedor = tkinter.Label(master=window_winner, text=f"{ranking[0]['nome']} venceu!", bg=background, fg=font_color, font=font_family)
 txt_vencedor.grid(column=0, row=0)
 
 window_winner.mainloop()
@@ -248,7 +288,7 @@ window_winner.mainloop()
 window_rank = tkinter.Tk()
 window_rank.title("Ranking Final")
 
-txt_rank = tkinter.Label(master=window_rank, text="")
+txt_rank = tkinter.Label(master=window_rank, text="", bg=background, fg=font_color, font=font_family)
 txt_rank.grid(column=0, row=0)
 
 mostrarRanking()
