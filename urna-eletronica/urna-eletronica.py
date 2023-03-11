@@ -27,7 +27,7 @@ def isValidDay():
 
     data_atual = datetime.date.today()
 
-    if data_atual.ctime()[0:3] == 'Sun':
+    if data_atual.ctime()[0:3] == 'Sat':
         return True
     else:
         print("Hoje não é domingo!")
@@ -81,6 +81,85 @@ info_eleitores = list()
 
 num_eleitores = 0
 
+def validarInformacoes():
+
+    nome = input_nome.get()
+
+    padrao_nome = re.compile("^[\S][a-zA-Z\s\D]+")
+
+    if re.fullmatch(padrao_nome, nome) == None:
+        res_nome['text'] = "Nome inválido! Digite-o novamente!"
+    else:
+        num_eleitores += 1
+
+    cpf = input_cpf.get()
+
+    if len(cpf) == 11 or len(cpf) == 14:
+        if ("." in cpf) and ("-" in cpf):
+            if cpf[0:3].isnumeric() and cpf[4:7].isnumeric() and cpf[8:11].isnumeric() and cpf[12:14].isnumeric():
+                cpf = cpf[0:3] + cpf[4:7] + cpf[8:11] + cpf[12:14]
+                
+            else:
+                input_cpf['text'] = "CPF inválido! Digite-o novamente!"
+        else:
+            if not(cpf.isnumeric()):
+                input_cpf['text'] = "CPF inválido! Digite-o novamente!"
+    else:
+        input_cpf['text'] = "Esse CPF não atende a quantidade correta! Digite-o novamente!"
+  
+    for candidato in candidatos:
+
+        nome_candidato, numero_candidato, votos_candidato = candidato.items()
+
+        print(f"{nome_candidato} - {numero_candidato}".center(50))
+
+
+    candidato_escolhido = input("Digite o número de seu candidato: ")
+
+    for candidato in candidatos:
+
+        nome_candidato, numero_candidato, votos_candidato = candidato.values()
+
+        if candidato_escolhido == numero_candidato:
+            exist_candidato = True
+        else:
+            continue
+
+    if not(exist_candidato):
+        res_num_cand['text'] = "O número desse candidato não consta no sistema! Digite-o novamente!"
+
+    if num_eleitores == 1 and exist_candidato:
+
+        votos_confirmados.append(candidato_escolhido)
+
+        info_eleitores.append((cpf, nome, candidato_escolhido))
+
+        res_confirmar['Text'] = "Voto Confirmado! Obrigado!"
+        res_confirmar['Text'] += "Por favor, espere 10 segundos!"
+
+        time.sleep(10)
+
+        window_eleitores.destroy()
+            
+    else:
+
+        if not(cpf in info_eleitores[0]):
+
+            votos_confirmados.append(candidato_escolhido)
+
+            info_eleitores.append((cpf, nome, candidato_escolhido))
+
+            res_confirmar['Text'] = "Voto Confirmado! Obrigado!"
+            res_confirmar['Text'] += "Por favor, espere 10 segundos!"
+
+            time.sleep(10)
+
+            window_eleitores.destroy()
+
+        else:
+            res_cpf['Text'] = "Esse CPF consta como já votado!"
+            num_eleitores -= 1
+
 while True:
 
     exist_candidato = False
@@ -91,106 +170,58 @@ while True:
 
         if isValidTime():
 
-            time.sleep(5)
+        # Janela para realizar voto
 
-            limpaTela()
+            font_family = ("Arial 10")
+            font_color = "#FFFFFF"
+            background = "#1e1e1e"
 
-            while True:
+            window_eleitores = tkinter.Tk()
+            window_eleitores.title("Realizar Voto")
+            window_eleitores.geometry("400x300")
+            window_eleitores.configure(background="#1e1e1e")
 
-                limpaTela()
 
-                nome = input("Digite seu primeiro nome: ").capitalize()
+            # Campo Nome
+            txt_nome = tkinter.Label(master=window_eleitores, text="Nome do Eleitor", anchor='w', font=font_family , bg=background, fg=font_color)
+            txt_nome.grid(row=0, column=0, padx=5, pady=10)
 
-                padrao_nome = re.compile("^[\S][a-zA-Z\s\D]+")
+            input_nome = tkinter.Entry(master=window_eleitores, bg="#DADADA")
+            input_nome.grid(row=1, column=0, padx=5, pady=5)
 
-                if re.fullmatch(padrao_nome, nome) == None:
-                    print("Nome inválido! Digite-o novamente!")
-                    time.sleep(5)
-                    limpaTela()
-                else:
-                    num_eleitores += 1
-                    break
+            res_nome = tkinter.Label(master=window_eleitores, bg=background, fg="FF0000", text="")
+            res_nome.grid(row=2, column=0, padx=5, pady=5)
 
-            while True:
 
-                cpf = input("Digite seu CPF: ")
+            # Campo CPF
+            txt_cpf = tkinter.Label(master=window_eleitores, text="CPF", anchor='w', font=font_family, bg=background, fg=font_color)
+            txt_cpf.grid(row=3, column=0, padx=5, pady=5)
 
-                if len(cpf) == 11 or len(cpf) == 14:
-                    if ("." in cpf) and ("-" in cpf):
-                        if cpf[0:3].isnumeric() and cpf[4:7].isnumeric() and cpf[8:11].isnumeric() and cpf[12:14].isnumeric():
-                            cpf = cpf[0:3] + cpf[4:7] + cpf[8:11] + cpf[12:14]
-                            break
-                        else:
-                            print("CPF inválido! Digite-o novamente!")
-                            time.sleep(5)
-                            limpaTela()
-                    else:
-                        if cpf.isnumeric():
-                            break
-                        else:
-                            print("CPF inválido! Digite-o novamente!")
-                            time.sleep(5)
-                            limpaTela()
-                else:
-                    print("Esse CPF não atende a quantidade correta! Digite-o novamente!")
-                    time.sleep(5)
-                    limpaTela()
-  
-            for candidato in candidatos:
+            input_cpf = tkinter.Entry(master=window_eleitores, bg="#DADADA")
+            input_cpf.grid(row=4, column=0, padx=5, pady=5)
 
-                nome_candidato, numero_candidato, votos_candidato = candidato.items()
+            res_cpf = tkinter.Label(master=window_eleitores, fg="00FF00", text="", bg="FF0000")
+            res_cpf.grid(row=5, column=0, padx=5, pady=5)
 
-                print(f"{nome_candidato} - {numero_candidato}".center(50))
 
-            while True:
+            # Campo Número do Candidato
+            txt_num_cand = tkinter.Label(master=window_eleitores, text="Número do Candidato", anchor='w', font=font_family, bg=background, fg=font_color)
+            txt_num_cand.grid(row=6, column=0, padx=5, pady=5)
 
-                candidato_escolhido = input("Digite o número de seu candidato: ")
+            input_num_cand = tkinter.Entry(master=window_eleitores, bg="#DADADA", width="2", font=("Arial 25"))
+            input_num_cand.grid(row=7, column=0, padx=5, pady=5)
 
-                for candidato in candidatos:
+            res_num_cand = tkinter.Label(master=window_eleitores, bg=background, fg="FF0000", text="")
+            res_num_cand.grid(row=8, column=0, padx=5, pady=5)
 
-                    nome_candidato, numero_candidato, votos_candidato = candidato.values()
+            # Campo Cofirmar
+            btn_confirmar = tkinter.Button(master=window_eleitores, text="Confirmar", command=validarInformacoes, borderwidth=5)
+            btn_confirmar.grid(row=9, column=2)
 
-                    if candidato_escolhido == numero_candidato:
-                        exist_candidato = True
-                    else:
-                        continue
+            res_confirmar = tkinter.Label(master=window_eleitores, text="", bg=background, fg=font_color)
 
-                if exist_candidato:
-                    break
-                else:
-                    print("O número desse candidato não consta no sistema! Digite-o novamente!")
-                    time.sleep(5)
-                    limpaTela()
+            window_eleitores.mainloop()
 
-            if num_eleitores == 1 and exist_candidato:
-
-                votos_confirmados.append(candidato_escolhido)
-
-                info_eleitores.append((cpf, nome, candidato_escolhido))
-
-                print("Voto Confirmado! Obrigado!")
-                print("Por favor, espere 10 segundos!")
-
-                time.sleep(10)
-            
-            else:
-
-                if not(cpf in info_eleitores[0]):
-
-                    votos_confirmados.append(candidato_escolhido)
-
-                    info_eleitores.append((cpf, nome, candidato_escolhido))
-
-                    print("Voto Confirmado! Obrigado!")
-                    print("Por favor, espere 10 segundos!")
-
-                    time.sleep(10)
-
-                else:
-                    print("Esse CPF consta como já votado!")
-                    num_eleitores -= 1
-                    time.sleep(5)
-                    limpaTela()
         else:
             break
     else:
