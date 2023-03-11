@@ -235,7 +235,7 @@ window_winner = tkinter.Tk()
 window_winner.geometry('40x20')
 window_winner.title("Vencedor da Eleição")
 
-txt_vencedor = tkinter.Label(window_winner, text=f"{ranking[0]['nome']} venceu!")
+txt_vencedor = tkinter.Label(master=window_winner, text=f"{ranking[0]['nome']} venceu!")
 txt_vencedor.grid(column=0, row=0)
 
 window_winner.mainloop()
@@ -243,7 +243,7 @@ window_winner.mainloop()
 window_rank = tkinter.Tk()
 window_rank.title("Ranking Final")
 
-txt_rank = tkinter.Label(window_rank, text=f"Ao todo, tivemos {num_eleitores} eleitores\n")
+txt_rank = tkinter.Label(master=window_rank, text=f"Ao todo, tivemos {num_eleitores} eleitores\n")
 txt_rank.grid(column=0, row=0)
 
 mostrarRanking()
