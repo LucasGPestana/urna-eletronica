@@ -162,7 +162,7 @@ while True:
                     time.sleep(5)
                     limpaTela()
 
-            if num_eleitores == 1 and exist_candidato:
+            if num_eleitores == 1:
 
                 votos_confirmados.append(candidato_escolhido)
 
