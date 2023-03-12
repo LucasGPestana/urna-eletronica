@@ -101,9 +101,14 @@ while True:
 
                 nome = input("Digite seu primeiro nome: ").capitalize()
 
-                padrao_nome = re.compile("^[\S][a-zA-Z\s\D]+")
+                padrao_nome = re.compile("[a-zA-Z\s\D]+")
+                padrao2_nome = re.compile("[\S]")
 
                 if re.fullmatch(padrao_nome, nome) == None:
+                    print("Nome inválido! Digite-o novamente!")
+                    time.sleep(5)
+                    limpaTela()
+                elif re.fullmatch(padrao2_nome, nome) == None:
                     print("Nome inválido! Digite-o novamente!")
                     time.sleep(5)
                     limpaTela()
