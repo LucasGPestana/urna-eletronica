@@ -1,5 +1,19 @@
 import datetime, os , time, tkinter, re
 
+font_family = ("Arial 10")
+font_color = "#FFFFFF"
+background = "#1e1e1e"
+
+window_tempo_data = tkinter.Tk()
+window_tempo_data.title("Informação Tempo/Data")
+window_tempo_data.configure(background=background)
+window_tempo_data.geometry("350x50")
+
+txt_tempo_data = tkinter.Label(master=window_tempo_data, text="", bg=background, font=font_family, fg=font_color)
+txt_tempo_data.grid(padx=10, pady=10)
+
+window_tempo_data.mainloop()
+
 def limpaTela():
     
     os.system('cls') or None
@@ -35,7 +49,7 @@ def isValidDay():
     if data_atual.ctime()[0:3] == 'Sat':
         return True
     else:
-        print("Hoje não é domingo!")
+        txt_tempo_data['text'] = "Hoje não é domingo!"
         return False
 
 def isValidTime():
@@ -47,14 +61,14 @@ def isValidTime():
     ano_atual = data_atual.year
 
     horario_atual = datetime.datetime.now()
-    horario_final = datetime.datetime(ano_atual, mes_atual, dia_atual, 21, 0, 0)
+    horario_final = datetime.datetime(ano_atual, mes_atual, dia_atual, 22, 0, 0)
 
     if horario_atual >= horario_final:
-        print("As eleições se encerraram!")
+        txt_tempo_data['text'] = "As eleições se encerraram!"
         return False
     else:
         dif_horario = horario_final - horario_atual
-        print(f"Ainda faltam {dif_horario} para encerrar as eleições")
+        txt_tempo_data['text'] = f"Ainda faltam {dif_horario} para encerrar as eleições"
         return True
 
 def criarArquivoEleitores():
@@ -257,7 +271,7 @@ while True:
             txt_fechar = tkinter.Label(master=window_eleitores, text="Clique aqui para fechar a janela", fg=font_color, bg=background)
             txt_fechar.grid(row=11, column=2, padx=5, pady=10)
 
-            btn_fechar = tkinter.Button(master=window_eleitores, text="Fechar", command=fecharJanela)
+            btn_fechar = tkinter.Button(master=window_eleitores, text="Fechar", command=fecharJanela, borderwidth=5)
             btn_fechar.grid(row=12, column=2)
 
             window_eleitores.mainloop()
